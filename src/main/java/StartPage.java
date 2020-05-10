@@ -10,7 +10,7 @@ public class StartPage extends JFrame {
     StartPage(){
         setTitle("FlightApplication - START");
 
-        initComp();
+        initCompStartPage();
 
         setSize(450, 300);
         setLocationRelativeTo(null);
@@ -18,7 +18,7 @@ public class StartPage extends JFrame {
         setVisible(true);
     }
 
-    public void initComp(){
+    public void initCompStartPage(){
         buttonLogin = new JButton("Login");
         buttonRegister = new JButton("Register");
         JPanel panou = new JPanel();
