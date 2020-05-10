@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.security.KeyStore;
 
 public class StartPage extends JFrame {
 
@@ -26,6 +27,17 @@ public class StartPage extends JFrame {
         panou.add(buttonLogin);
         panou.add(buttonRegister);
         this.add(panou);
+
+        buttonRegister.addActionListener(e-> {
+            RegisterPage registerPage = new RegisterPage();
+            registerPage.setVisible(true);
+            dispose();
+        });
+        buttonLogin.addActionListener(e->{
+            LoginPage loginPage = new LoginPage();
+            loginPage.setVisible(true);
+            dispose();
+        });
     }
 
 
