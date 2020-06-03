@@ -1,6 +1,7 @@
+package view;
+
 import javax.swing.*;
 import java.awt.*;
-import java.security.KeyStore;
 
 public class StartPage extends JFrame {
 
