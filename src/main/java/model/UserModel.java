@@ -7,7 +7,8 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 @Builder
-public class UserModel{
+public class UserModel {
+
 
     private int id;
     private String userNume;
@@ -31,4 +32,10 @@ public class UserModel{
         this.userNume = userNume;
         this.email = email;
     }
+
+    public UserModel(String userNume) {
+        this.userNume = userNume;
+    }
 }
+
+

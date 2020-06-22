@@ -1,32 +1,21 @@
 package view;
 
+import auditService.AuditService;
 import controller.ZborController;
 import model.ZborModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.text.Format;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.SimpleFormatter;
 
 public class AdaugaZborPage extends JFrame {
     private JButton addButton, cancelButton;
     private JLabel sursa, destinatie, oraSosire, pret, oraPlecare;
     private JTextField sursaField, destinatieField, oraSosireField, pretField, oraPlecareField;
-    private List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
     private JCheckBox jCheckBox1, jCheckBox2, jCheckBox3, jCheckBox4, jCheckBox5, jCheckBox6, jCheckBox7;
-    private String jCheckBoxSelected;
+    private String checkBoxValues = "";
 
     AdaugaZborPage(){
-        setTitle("Dashboard Page");
+        setTitle("Pagina Adauga Zbor");
 
         initCompZbor();
         initButtons();
@@ -87,7 +76,7 @@ public class AdaugaZborPage extends JFrame {
         JPanel panel = new JPanel();
 
         addButton = new JButton("Adauga zbor");
-        cancelButton = new JButton("Anuleaza");
+        cancelButton = new JButton("Cancel");
 
         panel.add(cancelButton);
         panel.add(addButton);
@@ -98,9 +87,23 @@ public class AdaugaZborPage extends JFrame {
             if(checkSursa()){
                 if(checkDestinatie()){
                     if(checkOraPlecare()){
-
+                        if (checkOraSosire()){
+                            if (checkPret()){
+                                selectCheckBox();
+                                addZbor();
+                                AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"Adaugare zbor", LoginPage.localDate());
+                            }else{
+                                JOptionPane.showMessageDialog(null,"Pret incorect!");
+                                pretField.setText("");
+                                requestFocus();
+                            }
+                        }else{
+                            JOptionPane.showMessageDialog(null, "Ora de sosire incorecta! Format necesar: ORA:Minut");
+                            oraSosireField.setText("");
+                            requestFocus();
+                        }
                     }else{
-                        JOptionPane.showMessageDialog(null, "Format orar incorect!");
+                        JOptionPane.showMessageDialog(null, "Ora de plecare incorecta! Format necesar: ORA:Minut");
                         oraPlecareField.setText("");
                         requestFocus();
                     }
@@ -114,11 +117,10 @@ public class AdaugaZborPage extends JFrame {
                 sursaField.setText("");
                 requestFocus();
             }
-
-
         });
 
         cancelButton.addActionListener(e->{
+            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"Anulare adaugare zbor", LoginPage.localDate());
             DashboardPage dashboardPage = new DashboardPage();
             dispose();
         });
@@ -128,25 +130,40 @@ public class AdaugaZborPage extends JFrame {
         AdaugaZborPage adaugaZborPage = new AdaugaZborPage();
     }
 
-//    public void selectedCheckBox() {
-//        if(jCheckBox1.isSelected())
-//        {
-//            if(jCheckBox2.isSelected())
-//            {
-//                jCheckBoxSelected = "Marti";
-//            }
-//            jCheckBoxSelected = "Luni";
-//        }
-//
-//    }
+    public void selectCheckBox() {
+        if(jCheckBox1.isSelected()){
+           checkBoxValues += jCheckBox1.getText()+", ";
+        }
+        if (jCheckBox2.isSelected()){
+            checkBoxValues += jCheckBox2.getText()+", ";
+        }
+        if (jCheckBox3.isSelected()){
+            checkBoxValues += jCheckBox3.getText()+", ";
+        }
+        if(jCheckBox4.isSelected()){
+           checkBoxValues += jCheckBox4.getText()+", ";
+        }
+        if (jCheckBox5.isSelected()){
+            checkBoxValues += jCheckBox5.getText()+", ";
+        }
+        if (jCheckBox6.isSelected()){
+            checkBoxValues += jCheckBox6.getText()+", ";
+        }
+        if (jCheckBox7.isSelected()){
+            checkBoxValues += jCheckBox7.getText()+", ";
+        }
+
+    }
 
     public void addZbor(){
         String sursa = sursaField.getText();
         String destinatie = destinatieField.getText();
         String oraPlecare = oraPlecareField.getText();
         String oraSosire = oraSosireField.getText();
-        String zile = jCheckBoxSelected = "";
+        String zile = checkBoxValues;
         int pret = Integer.parseInt(pretField.getText());
+
+
 
         ZborModel zborModel = new ZborModel(sursa, destinatie, oraPlecare, oraSosire, zile, pret);
         if(ZborController.getInstance().adaugaZbor(zborModel)){
@@ -161,8 +178,8 @@ public class AdaugaZborPage extends JFrame {
     }
 
     public boolean checkSursa(){
-        String pattern = "().{3,}";
-        String sursa = new String(sursaField.getText());
+        String pattern = "().{4,}";
+        String sursa = sursaField.getText();
         if(sursa.matches(pattern)){
             return true;
         }
@@ -170,9 +187,9 @@ public class AdaugaZborPage extends JFrame {
     }
 
     public boolean checkDestinatie(){
-        String pattern = "().{3,}";
-        String destinatie = new String( destinatieField.getText());
-        String sursa = new String(sursaField.getText());
+        String pattern = "().{4,}";
+        String destinatie = destinatieField.getText();
+        String sursa = sursaField.getText();
         if (destinatie.matches(pattern) & !destinatie.equals(sursa)){
             return true;
             }
@@ -188,16 +205,24 @@ public class AdaugaZborPage extends JFrame {
     }
 
     public boolean checkOraPlecare(){
-        Format timeFormat = new SimpleDateFormat("HH:mm");
-        String str = new String( oraPlecareField.getText());
-        if( str.equals(timeFormat)){
+
+        String time24Pattern = "([01]?[0-9]|2[0-3]):[0-5][0-9]";
+        String sursa = oraPlecareField.getText();
+
+        if(sursa.matches(time24Pattern)){
             return true;
         }
         return false;
     }
 
+    public boolean checkOraSosire(){
+        String time24Pattern = "([01]?[0-9]|2[0-3]):[0-5][0-9]";
+        String sursa = oraSosireField.getText();
 
-
-
+        if(sursa.matches(time24Pattern)){
+            return true;
+        }
+        return false;
+    }
 
 }

@@ -1,5 +1,6 @@
 package view;
 
+import auditService.AuditService;
 import controller.UserController;
 import dao.UserDao;
 import model.UserModel;
@@ -73,23 +74,30 @@ public class RegisterPage extends JFrame {
         panel.add(addButton);
 
         addButton.addActionListener(e -> {
-            if (securityPassword()) {
-                if (checkPassword()) {
-                    if(checkEmail()){
-                        register();
-                    }else{
-                        JOptionPane.showMessageDialog(null,"Mail Invalid");
-                        emailText.setText("");
-                        emailText.requestFocus();
+            if(isUserEmpty()) {
+                if (securityPassword()) {
+                    if (checkPassword()) {
+                        if (checkEmail()) {
+                            register();
+                            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(), "inregistrare user", LoginPage.localDate());
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Mail Invalid");
+                            emailText.setText("");
+                            emailText.requestFocus();
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Parolele nu sunt identice!");
+                        passwordConfirmationField.setText("");
+                        passwordConfirmationField.requestFocus();
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Parolele nu sunt identice!");
-                    passwordConfirmationField.setText("");
-                    passwordConfirmationField.requestFocus();
+                    JOptionPane.showMessageDialog(null, "Parola nu corespunde normelor de securitate: minim 6 caractere, minim o cifra, o litera mica și o litera mare");
+                    passwordField.setText("");
                 }
-            } else {
-                JOptionPane.showMessageDialog(null, "Parola nu corespunde securitatii: minim 6 caractere, minim o cifra, o litera mica și o litera mare");
-                passwordField.setText("");
+            }else{
+                JOptionPane.showMessageDialog(null, "Campul username este gol!");
+                usernameText.setText("Adaugati un username");
+                usernameText.requestFocus();
             }
         });
     }
@@ -137,5 +145,12 @@ public class RegisterPage extends JFrame {
             return true;
         }
         return false;
+    }
+
+    public boolean isUserEmpty(){
+       if(usernameText.getText().trim().isEmpty()){
+           return false;
+       }
+       return true;
     }
 }

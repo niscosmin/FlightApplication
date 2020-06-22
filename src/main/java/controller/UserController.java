@@ -16,6 +16,7 @@ public class UserController {
     private String pass =   "";
     private Connection connection;
 
+
     private  UserController(){
         try{
             connection = DriverManager.getConnection(url, username, pass);
@@ -66,10 +67,23 @@ public class UserController {
         return Optional.empty();
         }
 
-        public List<UserModel> getUsernameEmail(String nume){
+        public List<UserModel> getUsernameEmailList(String nume){
             UserDao userDao = new UserDao(connection);
             return userDao.afisareDetaliiUtilizator(nume);
         }
 
+        public boolean setNewUsername( String nume ){
+        UserDao userDao = new UserDao(connection);
+        return userDao.updateUsername(nume);
+        }
 
+        public boolean setNewEmail ( String email ){
+        UserDao userDao = new UserDao(connection);
+        return userDao.updateEmail(email);
+        }
+
+        public boolean setNewPass(String pass){
+        UserDao userDao = new UserDao(connection);
+        return userDao.updatePass(pass);
+        }
 }

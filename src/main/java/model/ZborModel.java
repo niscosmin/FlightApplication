@@ -28,7 +28,7 @@ public class ZborModel {
         this.pret = pret;
     }
 
-    public ZborModel(String sursa, String destinatie, String oraPlecare, String oraSosire,String zile, int pret) {
+    public ZborModel(String sursa, String destinatie, String oraPlecare, String oraSosire, String zile, int pret) {
         this.sursa = sursa;
         this.destinatie = destinatie;
         this.oraPlecare = oraPlecare;

@@ -1,6 +1,7 @@
 package dao;
 
 import model.UserModel;
+import view.LoginPage;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,7 +16,9 @@ public class UserDao {
 
     private Connection connection;
     private PreparedStatement insertQuerry;
-    private PreparedStatement updateQuerry;
+    private PreparedStatement updatePasswordQuerry;
+    private PreparedStatement updateUsernameQuerry;
+    private PreparedStatement updateEmailQuerry;
     private PreparedStatement selectQuerry;
 
     public UserDao(Connection connection) {
@@ -23,7 +26,9 @@ public class UserDao {
 
         try {
             insertQuerry = connection.prepareStatement("INSERT INTO register_user VALUES(null, ?, ?, ?)");
-            updateQuerry = connection.prepareStatement("UPDATE register_user SET password = ? WHERE username = ?");
+            updateUsernameQuerry = connection.prepareStatement("UPDATE register_user SET username = ? WHERE username = ?");
+            updateEmailQuerry = connection.prepareStatement("UPDATE register_user SET email = ? WHERE username = ?");
+            updatePasswordQuerry = connection.prepareStatement("UPDATE register_user SET password = ? WHERE username = ?");
             selectQuerry = connection.prepareStatement("SELECT * FROM register_user WHERE username = ?");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -61,18 +66,10 @@ public class UserDao {
         return Optional.empty();
     }
 
-
-//    public boolean updatePass(){
-//        updateQuerry.setString(1, );
-//    }
-
-
     public List<UserModel> afisareDetaliiUtilizator (String nume){
         try {
             selectQuerry.setString(1, nume);
-
             ResultSet resultSet = selectQuerry.executeQuery();
-
             List<UserModel> userModels = new ArrayList<>();
             while (resultSet.next()){
                         String username = resultSet.getString("username");
@@ -85,6 +82,39 @@ public class UserDao {
             e.printStackTrace();
         }
         return Collections.emptyList();
+    }
+
+    public boolean updateUsername( String nume){
+        try {
+            updateUsernameQuerry.setString(1, nume);
+            updateUsernameQuerry.setString(2, LoginPage.rememberUsername());
+            updateUsernameQuerry.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateEmail (String email) {
+        try {
+            updateEmailQuerry.setString(1 , email );
+            updateEmailQuerry.setString(2, LoginPage.rememberUsername());
+            updateEmailQuerry.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updatePass(String pass){
+        try {
+            updatePasswordQuerry.setString(1, pass);
+            updatePasswordQuerry.setString(2, LoginPage.rememberUsername());
+            updatePasswordQuerry.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
 

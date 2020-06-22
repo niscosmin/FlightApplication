@@ -1,18 +1,21 @@
 package view;
 
+import auditService.AuditService;
 import controller.UserController;
 import model.UserModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class LoginPage extends JFrame {
 
     JPanel panel;
-    JTextField usernameText;
+    public static JTextField usernameText;
     JPasswordField passwordField;
+    public static String nume;
 
     public LoginPage(){
         setTitle("Login");
@@ -53,11 +56,15 @@ public class LoginPage extends JFrame {
             dispose();
         });
 
-        loginButton.addActionListener(e-> login());}
+        loginButton.addActionListener(e-> {
+                login();
+            AuditService.getInstance().saveAudit(rememberUsername(),"login", localDate());
+        });}
 
     public void login() {
         String username = usernameText.getText();
         String password = new String(passwordField.getPassword());
+
 
         Optional <UserModel> userModel = UserController.getInstance().loginUser(username, password);
         if(userModel.isPresent()){
@@ -68,6 +75,15 @@ public class LoginPage extends JFrame {
         }
     }
 
+    public static String rememberUsername() {
+        return nume = usernameText.getText();
+    }
+
+    public static String localDate(){
+        String data;
+        LocalDateTime today = LocalDateTime.now();
+        return  data = today.toString();
+    }
 
 }
 

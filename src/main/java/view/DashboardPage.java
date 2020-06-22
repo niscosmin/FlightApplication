@@ -1,11 +1,10 @@
 package view;
 
+import auditService.AuditService;
 import org.apache.commons.dbutils.DbUtils;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
+import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,14 +35,13 @@ public class DashboardPage extends JFrame {
         initCompSouth();
         initAdaugaZborButton();
 
-        pack();
+        setSize(970,400);
         setLocationRelativeTo(null);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     public void initCompNorth() {
-
         JPanel panouTimp = new JPanel(new FlowLayout());
 
         dateLabel = new JLabel("");
@@ -51,7 +49,6 @@ public class DashboardPage extends JFrame {
 
         showDate();
         showTme();
-
 
         panouTimp.add(dateLabel);
         panouTimp.add(timeLabel);
@@ -70,10 +67,12 @@ public class DashboardPage extends JFrame {
         panou.add(adaugaZborButton);
 
         adaugaZborButton.addActionListener(e -> {
+            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"Accesat Adauga zbor", LoginPage.localDate());
             AdaugaZborPage zborPage = new AdaugaZborPage();
             dispose();
         });
         myAccountButton.addActionListener(e -> {
+            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"Accesat Contul meu", LoginPage.localDate());
             AccountPage accountPage = new AccountPage();
             dispose();
         });
@@ -83,6 +82,7 @@ public class DashboardPage extends JFrame {
 
     public void initAdaugaZborButton() {
         adaugaZborButton.addActionListener(e -> {
+            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"Accesat Adauga zbor", LoginPage.localDate());
             AdaugaZborPage zborPage = new AdaugaZborPage();
             dispose();
         });
@@ -91,12 +91,11 @@ public class DashboardPage extends JFrame {
     public void showDate() {
         Date date = new Date();
         SimpleDateFormat s = new SimpleDateFormat("dd-MM-yyyy");
-        dateLabel.setText("Data este: " + s.format(date));
+        dateLabel.setText("Data : " + s.format(date));
     }
 
     public void showTme() {
         new javax.swing.Timer(0, e -> {
-
             Date timer1 = new Date();
             SimpleDateFormat s = new SimpleDateFormat("hh:mm:ss a");
             timeLabel.setText(" si ora curenta: " + s.format(timer1));
@@ -109,16 +108,19 @@ public class DashboardPage extends JFrame {
         logOutMenu = new JMenuItem("Logout");
 
         dashboardMenu.addActionListener(e -> {
+            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"Accesat Dashboard Page (meniu)", LoginPage.localDate());
             DashboardPage dashboardPage = new DashboardPage();
             dispose();
         });
 
         logOutMenu.addActionListener(e -> {
+            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"Accesat Log Out (meniu)", LoginPage.localDate());
             LoginPage loginPage = new LoginPage();
             dispose();
         });
 
         accountMenu.addActionListener(e -> {
+            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"Accesat Contul meu (meniu)", LoginPage.localDate());
             AccountPage accountPage = new AccountPage();
             dispose();
         });
@@ -136,11 +138,12 @@ public class DashboardPage extends JFrame {
     }
 
     private void showTable() {
-
-//        Object [] columnName = {"Sursa", "Destinatie", "Ora de plecare", "Oa de sosire", "Zile", "Pret"};
         DefaultTableModel defaultTableModel = new DefaultTableModel();
-//        defaultTableModel.setColumnIdentifiers(columnName);
         JTable table = new JTable(defaultTableModel);
+
+        JScrollPane scroll = new JScrollPane(table);
+        table.setPreferredScrollableViewportSize(table.getPreferredSize());
+
 
         defaultTableModel.addColumn("Sursa");
         defaultTableModel.addColumn("Destinatie");
@@ -148,16 +151,8 @@ public class DashboardPage extends JFrame {
         defaultTableModel.addColumn("Ora de Sosire");
         defaultTableModel.addColumn("Zile");
         defaultTableModel.addColumn("Pret");
-
-//        table.getColumnModel().getColumn(0).setHeaderValue("Sursa");
-//        table.getColumnModel().getColumn(1).setHeaderValue("Destinatie");
-//        table.getColumnModel().getColumn(2).setHeaderValue("Ora de plecare");
-//        table.getColumnModel().getColumn(3).setHeaderValue("Ora de Sosire");
-//        table.getColumnModel().getColumn(4).setHeaderValue("Zile");
-//        table.getColumnModel().getColumn(5).setHeaderValue("Pret");
-
-        table.getTableHeader().resizeAndRepaint();
-
+        defaultTableModel.addColumn("Delete row");
+        defaultTableModel.addColumn("Id");
 
          String url ="jdbc:mysql://localhost/flightapp";
          String username = "root";
@@ -177,29 +172,35 @@ public class DashboardPage extends JFrame {
                         rs.getString("ora_plecare"),
                         rs.getString("ora_sosire"),
                         rs.getString("zile"),
-                        rs.getInt("pret")
+                        rs.getInt("pret"),
+                        rs.getInt("id")
                 });
             }
 
-                table.setAutoResizeMode(0);
+            table.setAutoResizeMode(0);
 
-
-            table.getColumnModel().getColumn(0).setPreferredWidth(70);
-            table.getColumnModel().getColumn(1).setPreferredWidth(70);
-            table.getColumnModel().getColumn(2).setPreferredWidth(70);
-            table.getColumnModel().getColumn(3).setPreferredWidth(70);
-            table.getColumnModel().getColumn(4).setPreferredWidth(70);
+            table.getColumnModel().getColumn(0).setPreferredWidth(100);
+            table.getColumnModel().getColumn(1).setPreferredWidth(100);
+            table.getColumnModel().getColumn(2).setPreferredWidth(100);
+            table.getColumnModel().getColumn(3).setPreferredWidth(100);
+            table.getColumnModel().getColumn(4).setPreferredWidth(400);
             table.getColumnModel().getColumn(5).setPreferredWidth(70);
+            table.getColumnModel().getColumn(6).setPreferredWidth(80);
+
+            table.getColumn("Delete row").setCellRenderer( new ButtonRenderer() );
+            table.getColumn("Delete row").setCellEditor( new ButtonEditor(new JTextField()));
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        this.add(table, BorderLayout.CENTER);
-
-
+        this.add(scroll);
     }
-        public static void main (String[]args){
-            DashboardPage dashboardPage = new DashboardPage();
-        }
+
+    public void closeDashboard(){
+        dispose();
+    }
+
+    public static void main(String[] args) {
+        DashboardPage dashboardPage = new DashboardPage();
+    }
 }

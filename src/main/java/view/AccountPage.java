@@ -1,5 +1,6 @@
 package view;
 
+import auditService.AuditService;
 import controller.UserController;
 import dao.UserDao;
 import model.UserModel;
@@ -40,21 +41,46 @@ public class AccountPage extends JFrame {
        this.add(list, BorderLayout.NORTH);
     }
 
-    public  void initComp(){
+    public void initComp(){
         JPanel panel2 = new JPanel(new GridLayout(2,2));
 
-
-
         changeUserNamerButton = new JButton("Schimbare Username");
-        changeUserNameField = new JTextField("New Username");
+        changeUserNameField = new JTextField("");
 
         changeEmailButton = new JButton("Schimbare Email");
-        changeEmailField = new JTextField("New E-mail");
+        changeEmailField = new JTextField("");
 
         panel2.add(changeUserNameField);
         panel2.add(changeUserNamerButton);
         panel2.add(changeEmailField);
         panel2.add(changeEmailButton);
+
+        changeUserNamerButton.addActionListener(e->{
+            if(changeUserNameField.getText().trim().isEmpty()){
+                JOptionPane.showMessageDialog(null, "Campul Username este gol");
+            }
+           else if(setareUsernameNou()){
+                AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"A schimbat username-ul", LoginPage.localDate());
+               JOptionPane.showMessageDialog(null, "Nume utilizator schimbat cu succes!");
+           }
+        });
+
+        changeEmailButton.addActionListener( e-> {
+            if(checkSecurityEmail()){
+                if(setNewEmail()){
+                    AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"A schimbat email-ul", LoginPage.localDate());
+                    JOptionPane.showMessageDialog(null,"Email-ul a fost schimbat in baza de date.");
+                }else{
+                    JOptionPane.showMessageDialog(null,"Email-ul nu a fost schimbat in baza de date.");
+                }
+            }else {
+                JOptionPane.showMessageDialog(null,"Email invalid.");
+                changeEmailField.setText("");
+                changeEmailField.requestFocus();
+            }
+        });
+
+
 
         this.add(panel2, BorderLayout.CENTER);
     }
@@ -72,11 +98,13 @@ public class AccountPage extends JFrame {
         this.add(panel3, BorderLayout.SOUTH);
 
         changePasswordButton.addActionListener(e->{
+            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"Accesat pagina schimbare parola", LoginPage.localDate());
             ChangePasswordPage changePasswordPage = new ChangePasswordPage();
             dispose();
         });
 
         backButton.addActionListener(e-> {
+            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"Accesare redirectionare Dashboard", LoginPage.localDate());
             DashboardPage dashboardPage = new DashboardPage();
             dispose();
         });
@@ -84,12 +112,35 @@ public class AccountPage extends JFrame {
 
     }
 
-    public static void main(String[] args) {
-        AccountPage accountPage = new AccountPage();
+    public void afisareDetaliiCont(){
+      List<UserModel> detalii = UserController.getInstance().getUsernameEmailList(LoginPage.rememberUsername()) ;
+        detalii.forEach(model::addElement);
     }
 
-    public void afisareDetaliiCont(){
-      List<UserModel> detalii = UserController.getInstance().getUsernameEmail("laura");
-      detalii.forEach(model::addElement);
+    public boolean setareUsernameNou(){
+        String newName = changeUserNameField.getText();
+
+        if(UserController.getInstance().setNewUsername(newName)){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean checkSecurityEmail(){
+        String pattern = "^(.+)@(.+)+\\.[A-Za-z0-9].$";
+        String password = new String(changeEmailField.getText());
+        if( password.matches(pattern) ){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean setNewEmail(){
+        String email = changeEmailField.getText();
+
+        if(UserController.getInstance().setNewEmail(email)){
+            return false;
+        }
+        return true;
     }
 }
