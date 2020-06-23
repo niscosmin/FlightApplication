@@ -35,7 +35,7 @@ public class DashboardPage extends JFrame {
         initCompSouth();
         initAdaugaZborButton();
 
-        setSize(970,400);
+        setSize(970, 400);
         setLocationRelativeTo(null);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -67,12 +67,12 @@ public class DashboardPage extends JFrame {
         panou.add(adaugaZborButton);
 
         adaugaZborButton.addActionListener(e -> {
-            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"Accesat Adauga zbor", LoginPage.localDate());
+            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(), "Accesat Adauga zbor", LoginPage.localDate());
             AdaugaZborPage zborPage = new AdaugaZborPage();
             dispose();
         });
         myAccountButton.addActionListener(e -> {
-            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"Accesat Contul meu", LoginPage.localDate());
+            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(), "Accesat Contul meu", LoginPage.localDate());
             AccountPage accountPage = new AccountPage();
             dispose();
         });
@@ -82,7 +82,7 @@ public class DashboardPage extends JFrame {
 
     public void initAdaugaZborButton() {
         adaugaZborButton.addActionListener(e -> {
-            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"Accesat Adauga zbor", LoginPage.localDate());
+            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(), "Accesat Adauga zbor", LoginPage.localDate());
             AdaugaZborPage zborPage = new AdaugaZborPage();
             dispose();
         });
@@ -108,19 +108,21 @@ public class DashboardPage extends JFrame {
         logOutMenu = new JMenuItem("Logout");
 
         dashboardMenu.addActionListener(e -> {
-            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"Accesat Dashboard Page (meniu)", LoginPage.localDate());
+
+            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(), "Accesat Dashboard Page (meniu)", LoginPage.localDate());
             DashboardPage dashboardPage = new DashboardPage();
             dispose();
         });
 
         logOutMenu.addActionListener(e -> {
-            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"Accesat Log Out (meniu)", LoginPage.localDate());
+            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(), "Accesat Log Out (meniu)", LoginPage.localDate());
             LoginPage loginPage = new LoginPage();
             dispose();
         });
 
         accountMenu.addActionListener(e -> {
-            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(),"Accesat Contul meu (meniu)", LoginPage.localDate());
+
+            AuditService.getInstance().saveAudit(LoginPage.rememberUsername(), "Accesat Contul meu (meniu)", LoginPage.localDate());
             AccountPage accountPage = new AccountPage();
             dispose();
         });
@@ -152,12 +154,11 @@ public class DashboardPage extends JFrame {
         defaultTableModel.addColumn("Zile");
         defaultTableModel.addColumn("Pret");
         defaultTableModel.addColumn("Delete row");
-        defaultTableModel.addColumn("Id");
 
-         String url ="jdbc:mysql://localhost/flightapp";
-         String username = "root";
-         String pass =   "";
-         Connection connection;
+        String url = "jdbc:mysql://localhost/flightapp";
+        String username = "root";
+        String pass = "";
+        Connection connection;
 
         try {
             connection = DriverManager.getConnection(url, username, pass);
@@ -165,7 +166,7 @@ public class DashboardPage extends JFrame {
             PreparedStatement tableQuerry = connection.prepareStatement(sql);
             ResultSet rs = tableQuerry.executeQuery();
 
-            while(rs.next()){
+            while (rs.next()) {
                 defaultTableModel.addRow(new Object[]{
                         rs.getString("sursa"),
                         rs.getString("destinatie"),
@@ -173,7 +174,6 @@ public class DashboardPage extends JFrame {
                         rs.getString("ora_sosire"),
                         rs.getString("zile"),
                         rs.getInt("pret"),
-                        rs.getInt("id")
                 });
             }
 
@@ -187,8 +187,8 @@ public class DashboardPage extends JFrame {
             table.getColumnModel().getColumn(5).setPreferredWidth(70);
             table.getColumnModel().getColumn(6).setPreferredWidth(80);
 
-            table.getColumn("Delete row").setCellRenderer( new ButtonRenderer() );
-            table.getColumn("Delete row").setCellEditor( new ButtonEditor(new JTextField()));
+            table.getColumn("Delete row").setCellRenderer(new ButtonRenderer());
+            table.getColumn("Delete row").setCellEditor(new ButtonEditor(new JTextField()));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -196,11 +196,7 @@ public class DashboardPage extends JFrame {
         this.add(scroll);
     }
 
-    public void closeDashboard(){
+    public void closeDashboard() {
         dispose();
-    }
-
-    public static void main(String[] args) {
-        DashboardPage dashboardPage = new DashboardPage();
     }
 }

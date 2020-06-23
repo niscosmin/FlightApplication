@@ -126,10 +126,6 @@ public class AdaugaZborPage extends JFrame {
         });
     }
 
-    public static void main(String[] args) {
-        AdaugaZborPage adaugaZborPage = new AdaugaZborPage();
-    }
-
     public void selectCheckBox() {
         if(jCheckBox1.isSelected()){
            checkBoxValues += jCheckBox1.getText()+", ";

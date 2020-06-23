@@ -12,12 +12,11 @@ class ButtonRenderer extends JButton implements TableCellRenderer {
             setBackground(Color.green);
             int raspuns = JOptionPane.showConfirmDialog(null, "Sunteti sigur ca stergeti randul?", String.valueOf(JOptionPane.QUESTION_MESSAGE), JOptionPane.YES_NO_OPTION);
             if ( raspuns == 0){
-                JOptionPane.showMessageDialog(null, "se sterge");
-                DashboardPage dashboardPage = new DashboardPage();
+                JOptionPane.showMessageDialog(null, "ar trebui sa stearga din baza de date.....");
 
             }else {
                 JOptionPane.showMessageDialog(null, "nu se sterge");
-                DashboardPage dashboardPage = new DashboardPage();
+
             }
         } else {
             setBackground(Color.red);
