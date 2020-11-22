@@ -1,7 +1,4 @@
 package auditService;
-
-import controller.UserController;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -14,10 +11,10 @@ public class AuditService {
     private String pass =   "";
     private Connection connection;
     private PreparedStatement insertQuerry;
-    String nume,  actiune,  ora;
+    private String nume,  actiune,  ora;
 
 
-    public AuditService(){
+    private AuditService(){
         try {
             connection = DriverManager.getConnection(url, username, pass);
         } catch (SQLException throwables) {
@@ -38,7 +35,6 @@ public class AuditService {
     public static AuditService getInstance(){
         return  AuditService.SingletonHolder.INSTANCE;
     }
-
 
     public AuditService(String nume, String actiune, String ora) {
         this.nume = nume;
