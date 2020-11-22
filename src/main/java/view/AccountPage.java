@@ -1,14 +1,9 @@
 package view;
-
 import auditService.AuditService;
 import controller.UserController;
-import dao.UserDao;
 import model.UserModel;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 public class AccountPage extends JFrame {
@@ -31,8 +26,7 @@ public class AccountPage extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
-    public void initUserInfo(){
-
+    private void initUserInfo(){
         model = new DefaultListModel<>();
         list = new JList();
         list.setModel(model);
@@ -41,15 +35,12 @@ public class AccountPage extends JFrame {
        this.add(list, BorderLayout.NORTH);
     }
 
-    public void initComp(){
+    private void initComp(){
         JPanel panel2 = new JPanel(new GridLayout(2,2));
-
         changeUserNamerButton = new JButton("Schimbare Username");
         changeUserNameField = new JTextField("");
-
         changeEmailButton = new JButton("Schimbare Email");
         changeEmailField = new JTextField("");
-
         panel2.add(changeUserNameField);
         panel2.add(changeUserNamerButton);
         panel2.add(changeEmailField);
@@ -79,22 +70,15 @@ public class AccountPage extends JFrame {
                 changeEmailField.requestFocus();
             }
         });
-
-
-
         this.add(panel2, BorderLayout.CENTER);
     }
 
-    public void initSouthComp() {
+    private void initSouthComp() {
         JPanel panel3 = new JPanel();
-
         backButton = new JButton("Back");
         changePasswordButton = new JButton("Schimba Parola");
-
         panel3.add(backButton);
         panel3.add(changePasswordButton);
-
-
         this.add(panel3, BorderLayout.SOUTH);
 
         changePasswordButton.addActionListener(e->{
@@ -108,25 +92,22 @@ public class AccountPage extends JFrame {
             DashboardPage dashboardPage = new DashboardPage();
             dispose();
         });
-
-
     }
 
-    public void afisareDetaliiCont(){
+    private void afisareDetaliiCont(){
       List<UserModel> detalii = UserController.getInstance().getUsernameEmailList(LoginPage.rememberUsername()) ;
         detalii.forEach(model::addElement);
     }
 
-    public boolean setareUsernameNou(){
+    private boolean setareUsernameNou(){
         String newName = changeUserNameField.getText();
-
         if(UserController.getInstance().setNewUsername(newName)){
             return false;
         }
         return true;
     }
 
-    public boolean checkSecurityEmail(){
+    private boolean checkSecurityEmail(){
         String pattern = "^(.+)@(.+)+\\.[A-Za-z0-9].$";
         String password = new String(changeEmailField.getText());
         if( password.matches(pattern) ){
@@ -135,7 +116,7 @@ public class AccountPage extends JFrame {
         return false;
     }
 
-    public boolean setNewEmail(){
+    private boolean setNewEmail(){
         String email = changeEmailField.getText();
 
         if(UserController.getInstance().setNewEmail(email)){

@@ -1,12 +1,9 @@
 package controller;
-
 import dao.ZborDao;
 import model.ZborModel;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Observable;
 import java.util.Optional;
 
 public class ZborController {
@@ -16,9 +13,7 @@ public class ZborController {
     private String pass =   "";
     private Connection connection;
 
-
     public ZborController() {
-
         try {
             connection = DriverManager.getConnection(url, username, pass);
         } catch (SQLException e) {
