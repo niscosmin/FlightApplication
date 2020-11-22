@@ -13,7 +13,6 @@ public class UserController {
     private String pass =   "";
     private Connection connection;
 
-
     private  UserController(){
         try{
             connection = DriverManager.getConnection(url, username, pass);
@@ -30,8 +29,6 @@ public class UserController {
         return  SingletonHolder.INSTANCE;
     }
 
-
-
     public boolean adaugaUser (UserModel userModel)  {
         boolean rez = false;
         UserDao userDao = new UserDao(connection);
@@ -47,7 +44,6 @@ public class UserController {
         }
         return rez;
     }
-
 
     public Optional<UserModel> loginUser (String username, String password)  {
         UserDao userDao = new UserDao(connection);

@@ -13,13 +13,11 @@ public class AccountPage extends JFrame {
     private JList list;
     private DefaultListModel<UserModel> model;
 
-    AccountPage(){
+    protected AccountPage(){
         setTitle("Contul meu");
-
         initUserInfo();
         initComp();
         initSouthComp();
-
         pack();
         setVisible(true);
         setLocationRelativeTo(null);
@@ -31,8 +29,7 @@ public class AccountPage extends JFrame {
         list = new JList();
         list.setModel(model);
         afisareDetaliiCont();
-
-       this.add(list, BorderLayout.NORTH);
+        this.add(list, BorderLayout.NORTH);
     }
 
     private void initComp(){
@@ -118,7 +115,6 @@ public class AccountPage extends JFrame {
 
     private boolean setNewEmail(){
         String email = changeEmailField.getText();
-
         if(UserController.getInstance().setNewEmail(email)){
             return false;
         }

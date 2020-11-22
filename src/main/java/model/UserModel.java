@@ -1,7 +1,5 @@
 package model;
-
 import lombok.*;
-
 @Getter
 @Setter
 @ToString

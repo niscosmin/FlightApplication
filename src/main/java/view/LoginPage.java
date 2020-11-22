@@ -1,35 +1,29 @@
 package view;
-
 import auditService.AuditService;
 import controller.UserController;
 import model.UserModel;
-
 import javax.swing.*;
 import java.awt.*;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class LoginPage extends JFrame {
 
-    JPanel panel;
-    public static JTextField usernameText;
-    JPasswordField passwordField;
-    public static String nume;
+    private JPanel panel;
+    private static JTextField usernameText;
+    private JPasswordField passwordField;
+    private static String nume;
 
     public LoginPage(){
         setTitle("Login");
-
         initCompLoginPage();
-
-
         setSize(400, 170);
         setLocationRelativeTo(null);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    public void initCompLoginPage(){
+    private void initCompLoginPage(){
         JLabel username = new JLabel("Usermane:");
         this.usernameText = new JTextField("");
 
@@ -42,7 +36,6 @@ public class LoginPage extends JFrame {
         panel = new JPanel();
         panel.setBorder(BorderFactory.createEmptyBorder(20, 10,20,0));
         panel.setLayout(new GridLayout(3,2));
-
         panel.add(username);
         panel.add(usernameText);
         panel.add(password);
@@ -55,17 +48,14 @@ public class LoginPage extends JFrame {
             StartPage startPage = new StartPage();
             dispose();
         });
-
         loginButton.addActionListener(e-> {
                 login();
             AuditService.getInstance().saveAudit(rememberUsername(),"login", localDate());
         });}
 
-    public void login() {
+    private void login() {
         String username = usernameText.getText();
         String password = new String(passwordField.getPassword());
-
-
         Optional <UserModel> userModel = UserController.getInstance().loginUser(username, password);
         if(userModel.isPresent()){
             new DashboardPage();
@@ -84,7 +74,6 @@ public class LoginPage extends JFrame {
         LocalDateTime today = LocalDateTime.now();
         return  data = today.toString();
     }
-
 }
 
 

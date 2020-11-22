@@ -1,27 +1,19 @@
 package view;
-
 import auditService.AuditService;
 import controller.UserController;
-import dao.UserDao;
 import model.UserModel;
-
 import javax.swing.*;
 import java.awt.*;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class RegisterPage extends JFrame {
 
-    JPanel panel;
-    JLabel usernameLabel, passwordLabel, emailLabel, passwordConfirmation;
-    JTextField usernameText, emailText;
-    JPasswordField passwordField, passwordConfirmationField;
-    JButton addButton, backButton;
+    private JPanel panel;
+    private JLabel usernameLabel, passwordLabel, emailLabel, passwordConfirmation;
+    private JTextField usernameText, emailText;
+    private JPasswordField passwordField, passwordConfirmationField;
+    private JButton addButton, backButton;
 
-    public RegisterPage() {
+    protected RegisterPage() {
         setTitle("Register");
         panel = new JPanel();
         panel.setBorder(BorderFactory.createEmptyBorder(20, 10,20,10));
@@ -36,7 +28,8 @@ public class RegisterPage extends JFrame {
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-    public void initCompRegisterPage(){
+
+    private void initCompRegisterPage(){
         usernameLabel = new JLabel("Username:");
         usernameText = new JTextField("");
 
@@ -102,12 +95,10 @@ public class RegisterPage extends JFrame {
         });
     }
 
-    public void register(){
-
+    private void register(){
         String username = usernameText.getText();
         String password = new String(passwordField.getPassword());
         String email = emailText.getText();
-
         UserModel userModel = new UserModel(username, password, email);
       if(UserController.getInstance().adaugaUser(userModel)){
           JOptionPane.showMessageDialog(null, "User Inregistrat!");
@@ -120,7 +111,7 @@ public class RegisterPage extends JFrame {
       }
     }
 
-    public boolean checkEmail() {
+    private boolean checkEmail() {
         String pattern ="^(.+)@(.+)+\\.[A-Za-z0-9].$";
         String email = emailText.getText();
         if( email.matches(pattern)){
@@ -129,7 +120,7 @@ public class RegisterPage extends JFrame {
         return false;
     }
 
-    public boolean securityPassword(){
+    private boolean securityPassword(){
         String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{6,}";
         String password = new String(passwordField.getPassword());
         if( password.matches(pattern) ){
@@ -138,7 +129,7 @@ public class RegisterPage extends JFrame {
         return false;
     }
 
-    public boolean checkPassword(){
+    private boolean checkPassword(){
         String password = new String(passwordField.getPassword());
         String passwordConfirmation = new String(passwordConfirmationField.getPassword());
         if(password.equals(passwordConfirmation)){
@@ -147,7 +138,7 @@ public class RegisterPage extends JFrame {
         return false;
     }
 
-    public boolean isUserEmpty(){
+    private boolean isUserEmpty(){
        if(usernameText.getText().trim().isEmpty()){
            return false;
        }

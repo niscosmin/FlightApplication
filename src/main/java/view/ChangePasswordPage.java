@@ -1,18 +1,16 @@
 package view;
-
 import auditService.AuditService;
 import controller.UserController;
-
 import javax.swing.*;
 import java.awt.*;
 
 public class ChangePasswordPage extends JFrame {
 
-    JButton backButton, confirmButton;
-    JLabel passwordLabel, confirmPasswordLabel;
-    JPasswordField passwordField, confirmPasswordField;
+    private JButton backButton, confirmButton;
+    private JLabel passwordLabel, confirmPasswordLabel;
+    private JPasswordField passwordField, confirmPasswordField;
 
-     public ChangePasswordPage(){
+     protected ChangePasswordPage(){
          setTitle("Schimbare Parola");
 
          initComp();
@@ -23,7 +21,7 @@ public class ChangePasswordPage extends JFrame {
          setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
-    public void initComp(){
+    private void initComp(){
          JPanel panel = new JPanel(new GridLayout(3,2));
          panel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10)) ;
 
@@ -72,7 +70,7 @@ public class ChangePasswordPage extends JFrame {
          });
     }
 
-    public boolean setareNewPass(){
+    private boolean setareNewPass(){
          String parola = new String(passwordField.getPassword());
          if(UserController.getInstance().setNewPass(parola)){
              return false;
@@ -80,7 +78,7 @@ public class ChangePasswordPage extends JFrame {
          return true;
     }
 
-    public boolean checkPasswords(){
+    private boolean checkPasswords(){
         String password = new String(passwordField.getPassword());
         String passwordConfirmation = new String(confirmPasswordField.getPassword());
         if(password.equals(passwordConfirmation)){
@@ -89,7 +87,7 @@ public class ChangePasswordPage extends JFrame {
         return false;
     }
 
-    public boolean securityPassword(){
+    private boolean securityPassword(){
         String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{6,}";
         String password = new String(passwordField.getPassword());
         if( password.matches(pattern) ){
